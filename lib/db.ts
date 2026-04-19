@@ -15,7 +15,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 export async function connectToDatabase() {
   if (!MONGODB_URI) {
-    throw new Error("MONGODB_URI environment variable is not set. Add it to your .env.local file.");
+    throw new Error("MONGODB_URI environment variable is not set. Configure it in your environment.");
   }
 
   if (globalForMongoose.mongoose.conn) {

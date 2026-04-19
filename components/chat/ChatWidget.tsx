@@ -15,6 +15,7 @@ export default function ChatWidget() {
   const [chatId, setChatId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
@@ -56,9 +57,13 @@ export default function ChatWidget() {
     socket.on("chat:message", (message: ChatMessage) => {
       setMessages((prev) => [...prev, message]);
     });
+    socket.on("chat:error", (payload: { message: string }) => {
+      setError(payload.message);
+    });
 
     return () => {
       socket.off("chat:message");
+      socket.off("chat:error");
     };
   }, [open, chatId]);
 
@@ -84,7 +89,7 @@ export default function ChatWidget() {
             ) : (
               messages.map((message, index) => (
                 <div
-                  key={`${message.text}-${index}`}
+                  key={`${chatId ?? "chat"}-${message.createdAt ?? "now"}-${index}`}
                   className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <span
@@ -97,6 +102,7 @@ export default function ChatWidget() {
                 </div>
               ))
             )}
+            {error && <p className="text-xs text-red-600">{error}</p>}
           </div>
           <div className="flex items-center gap-2 border-t border-gold/20 p-3">
             <input

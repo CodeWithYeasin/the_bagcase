@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
-import { formatPrice, getDiscountedPrice } from "@/lib/products";
+import { formatPrice } from "@/lib/products";
 import { useSession, signIn } from "next-auth/react";
 
 export default function CheckoutPage() {
@@ -35,7 +35,7 @@ export default function CheckoutPage() {
       items: items.map((item) => ({
         productId: item.id,
         name: item.name,
-        price: getDiscountedPrice(item.price, item.discountPercent),
+        price: item.unitPrice,
         quantity: item.quantity,
         image: item.image,
       })),
@@ -130,9 +130,7 @@ export default function CheckoutPage() {
                 <span>
                   {item.name} × {item.quantity}
                 </span>
-                <span>
-                  {formatPrice(getDiscountedPrice(item.price, item.discountPercent) * item.quantity)}
-                </span>
+                <span>{formatPrice(item.unitPrice * item.quantity)}</span>
               </div>
             ))}
           </div>

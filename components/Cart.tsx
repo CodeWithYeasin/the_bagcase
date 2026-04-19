@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { FiMinus, FiPlus, FiX } from "react-icons/fi";
-import { formatPrice, getDiscountedPrice } from "@/lib/products";
+import { formatPrice } from "@/lib/products";
 import { useCart } from "@/lib/cart-context";
 
 export default function Cart() {
@@ -50,7 +50,7 @@ export default function Cart() {
                       <div className="flex-1">
                         <h3 className="font-medium text-navy">{item.name}</h3>
                         <div className="flex items-center gap-2 text-sm text-navy/70">
-                          <span>{formatPrice(getDiscountedPrice(item.price, item.discountPercent))}</span>
+                          <span>{formatPrice(item.unitPrice)}</span>
                           {item.discountPercent > 0 && (
                             <span className="text-xs line-through">{formatPrice(item.price)}</span>
                           )}

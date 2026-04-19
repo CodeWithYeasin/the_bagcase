@@ -52,17 +52,18 @@ export default function ProductCard({ product }: { product: Product }) {
 
   useEffect(() => {
     if (!product.discountPercent) return;
-    let start = 0;
     const duration = 600;
     const startTime = performance.now();
+    let frameId = 0;
 
     const tick = (now: number) => {
       const progress = Math.min((now - startTime) / duration, 1);
-      const value = Math.round(start + progress * product.discountPercent);
+      const value = Math.round(progress * product.discountPercent);
       setDisplayDiscount(value);
-      if (progress < 1) requestAnimationFrame(tick);
+      if (progress < 1) frameId = requestAnimationFrame(tick);
     };
-    requestAnimationFrame(tick);
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
   }, [product.discountPercent]);
 
   return (

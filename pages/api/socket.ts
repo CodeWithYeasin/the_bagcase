@@ -28,8 +28,18 @@ export default function handler(req: NextApiRequest, res: NextApiResponseWithSoc
       socket.on("chat:message", async (payload: { chatId: string; sender: string; text: string }) => {
         const { chatId, sender, text } = payload;
         const sanitizedText = text?.trim();
-        if (!chatId || !sanitizedText) return;
-        if (sender !== "user" && sender !== "admin") return;
+        if (!chatId) {
+          socket.emit("chat:error", { message: "Missing chatId." });
+          return;
+        }
+        if (!sanitizedText) {
+          socket.emit("chat:error", { message: "Message cannot be empty." });
+          return;
+        }
+        if (sender !== "user" && sender !== "admin") {
+          socket.emit("chat:error", { message: "Invalid sender." });
+          return;
+        }
         await connectToDatabase();
         await ChatModel.findByIdAndUpdate(chatId, {
           $push: { messages: { sender, text: sanitizedText } },

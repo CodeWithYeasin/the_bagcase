@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import type { Provider } from "next-auth/providers";
 import { compare, hash } from "bcryptjs";
+import { randomBytes } from "crypto";
 import { createUser, getUserByEmail } from "@/lib/users";
 
 const adminEmails = process.env.ADMIN_EMAILS?.split(",").map((email) => email.trim().toLowerCase()) ?? [];
@@ -75,7 +76,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           await createUser({
             name: user.name ?? "BagCase User",
             email,
-            password: await hash(Math.random().toString(36), 10),
+            password: await hash(randomBytes(32).toString("hex"), 10),
             role: adminEmails.includes(email) ? "admin" : "user",
             provider: "google",
           });

@@ -12,6 +12,8 @@ type NormalizedItem = {
   quantity: number;
   image: string;
 };
+const MAX_QUANTITY = 50;
+const MAX_PRICE = 100000;
 
 export async function GET() {
   const session = await auth();
@@ -48,7 +50,7 @@ export async function POST(request: Request) {
 
   const normalizedItems = requestedItems
     .map((item) => {
-      const quantity = Math.max(1, Number(item.quantity) || 1);
+      const quantity = Math.min(MAX_QUANTITY, Math.max(1, Number(item.quantity) || 1));
       const productId = item.productId;
       const dbProduct =
         typeof productId === "string" ? dbMap.get(productId) : undefined;
@@ -58,7 +60,10 @@ export async function POST(request: Request) {
           : undefined;
       const product = dbProduct ?? localProduct;
       if (!product) return null;
-      const price = getDiscountedPrice(product.price, product.discountPercent ?? 0);
+      const price = Math.min(
+        MAX_PRICE,
+        getDiscountedPrice(product.price, product.discountPercent ?? 0)
+      );
       return {
         productId,
         name: product.name,
@@ -77,6 +82,9 @@ export async function POST(request: Request) {
     (acc, item) => acc + item.price * item.quantity,
     0
   );
+  if (!Number.isFinite(subtotal)) {
+    return NextResponse.json({ error: "Invalid order total." }, { status: 400 });
+  }
   const shipping = subtotal > 0 ? 200 : 0;
   const total = subtotal + shipping;
 
