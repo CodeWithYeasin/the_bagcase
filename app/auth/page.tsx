@@ -42,8 +42,9 @@ export default function AuthPage() {
         setLoading(false);
         return;
       }
-      if (password.length < 6 || password !== confirm) {
-        setMessage("Passwords must match and be at least 6 characters.");
+      const complexity = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+      if (password.length < 8 || password !== confirm || !complexity.test(password)) {
+        setMessage("Passwords must match, be 8+ characters, and include upper/lowercase plus a number.");
         setLoading(false);
         return;
       }

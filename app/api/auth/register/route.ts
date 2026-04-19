@@ -10,9 +10,13 @@ export async function POST(request: Request) {
   const email = body?.email?.toString().toLowerCase().trim();
   const password = body?.password?.toString() ?? "";
 
-  if (!name || !email || password.length < 6) {
+  const complexity = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+  if (!name || !email || password.length < 8 || !complexity.test(password)) {
     return NextResponse.json(
-      { error: "Name and email are required, and password must be at least 6 characters." },
+      {
+        error:
+          "Name and email are required. Password must be at least 8 characters with upper/lowercase letters and a number.",
+      },
       { status: 400 }
     );
   }

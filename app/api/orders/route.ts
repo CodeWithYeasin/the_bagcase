@@ -12,8 +12,12 @@ type NormalizedItem = {
   quantity: number;
   image: string;
 };
-const MAX_QUANTITY = 50;
-const MAX_PRICE = 100000;
+const MAX_QUANTITY = Number.isFinite(Number(process.env.MAX_ORDER_QUANTITY))
+  ? Number(process.env.MAX_ORDER_QUANTITY)
+  : 50;
+const MAX_PRICE = Number.isFinite(Number(process.env.MAX_PRODUCT_PRICE))
+  ? Number(process.env.MAX_PRODUCT_PRICE)
+  : 100000;
 
 export async function GET() {
   const session = await auth();

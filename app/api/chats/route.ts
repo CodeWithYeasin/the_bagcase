@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { randomBytes } from "crypto";
 import { auth } from "@/auth";
 import { connectToDatabase } from "@/lib/db";
 import { ChatModel } from "@/lib/models/Chat";
@@ -15,6 +16,7 @@ export async function GET() {
 
 export async function POST() {
   await connectToDatabase();
-  const chat = await ChatModel.create({ status: "open", messages: [] });
-  return NextResponse.json({ id: chat._id.toString() }, { status: 201 });
+  const accessKey = randomBytes(16).toString("hex");
+  const chat = await ChatModel.create({ status: "open", messages: [], accessKey });
+  return NextResponse.json({ id: chat._id.toString(), accessKey }, { status: 201 });
 }

@@ -13,6 +13,7 @@ type ChatMessage = {
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [chatId, setChatId] = useState<string | null>(null);
+  const [chatKey, setChatKey] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -22,16 +23,20 @@ export default function ChatWidget() {
     if (!open) return;
 
     const init = async () => {
-      const stored = window.localStorage.getItem("bagcase.chat-id");
-      if (stored) {
-        setChatId(stored);
+      const storedId = window.localStorage.getItem("bagcase.chat-id");
+      const storedKey = window.localStorage.getItem("bagcase.chat-key");
+      if (storedId && storedKey) {
+        setChatId(storedId);
+        setChatKey(storedKey);
         return;
       }
       const res = await fetch("/api/chats", { method: "POST" });
       const data = await res.json();
-      if (data.id) {
+      if (data.id && data.accessKey) {
         window.localStorage.setItem("bagcase.chat-id", data.id);
+        window.localStorage.setItem("bagcase.chat-key", data.accessKey);
         setChatId(data.id);
+        setChatKey(data.accessKey);
       }
     };
 
@@ -39,9 +44,11 @@ export default function ChatWidget() {
   }, [open]);
 
   useEffect(() => {
-    if (!open || !chatId) return;
+    if (!open || !chatId || !chatKey) return;
     const loadHistory = async () => {
-      const res = await fetch(`/api/chats/${chatId}`);
+      const res = await fetch(`/api/chats/${chatId}`, {
+        headers: { "x-chat-key": chatKey },
+      });
       if (!res.ok) return;
       const data = await res.json();
       if (data.item?.messages) setMessages(data.item.messages);
@@ -65,11 +72,11 @@ export default function ChatWidget() {
       socket.off("chat:message");
       socket.off("chat:error");
     };
-  }, [open, chatId]);
+  }, [open, chatId, chatKey]);
 
   const handleSend = () => {
-    if (!input.trim() || !chatId || !socketRef.current) return;
-    socketRef.current.emit("chat:message", { chatId, sender: "user", text: input });
+    if (!input.trim() || !chatId || !chatKey || !socketRef.current) return;
+    socketRef.current.emit("chat:message", { chatId, chatKey, sender: "user", text: input });
     setInput("");
   };
 
@@ -89,7 +96,7 @@ export default function ChatWidget() {
             ) : (
               messages.map((message, index) => (
                 <div
-                  key={`${chatId ?? "chat"}-${message.createdAt ?? "now"}-${index}`}
+                  key={message.createdAt ?? `${chatId ?? "chat"}-${index}`}
                   className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <span

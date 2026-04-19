@@ -13,6 +13,7 @@ type ChatThread = {
   _id: string;
   status: string;
   messages: ChatMessage[];
+  accessKey: string;
 };
 
 export default function AdminChatPage() {
@@ -50,8 +51,13 @@ export default function AdminChatPage() {
   }, [active?._id]);
 
   const handleSend = () => {
-    if (!input.trim() || !active?._id || !socketRef.current) return;
-    socketRef.current.emit("chat:message", { chatId: active._id, sender: "admin", text: input });
+    if (!input.trim() || !active?._id || !active.accessKey || !socketRef.current) return;
+    socketRef.current.emit("chat:message", {
+      chatId: active._id,
+      chatKey: active.accessKey,
+      sender: "admin",
+      text: input,
+    });
     setInput("");
   };
 
@@ -97,7 +103,7 @@ export default function AdminChatPage() {
           {active?.messages?.length ? (
             active.messages.map((message, index) => (
               <div
-                key={`${message.text}-${index}`}
+                key={`${message.createdAt ?? "msg"}-${index}`}
                 className={`flex ${message.sender === "admin" ? "justify-end" : "justify-start"}`}
               >
                 <span

@@ -11,6 +11,7 @@ const MessageSchema = new Schema(
 const ChatSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User" },
+    accessKey: { type: String, required: true },
     status: { type: String, default: "open" },
     messages: { type: [MessageSchema], default: [] },
   },
