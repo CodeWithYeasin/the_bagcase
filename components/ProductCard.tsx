@@ -56,7 +56,7 @@ export default function ProductCard({ product }: { product: Product }) {
           </div>
         </div>
 
-        <div className="absolute inset-0 flex rotate-y-180 flex-col justify-between rounded-2xl bg-navy p-6 text-cream [backface-visibility:hidden] [transform:rotateY(180deg)]">
+        <div className="absolute inset-0 flex flex-col justify-between rounded-2xl bg-navy p-6 text-cream [backface-visibility:hidden] [transform:rotateY(180deg)]">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-gold">Quick Details</p>
             <h3 className="mt-2 font-serif text-2xl">{product.name}</h3>
