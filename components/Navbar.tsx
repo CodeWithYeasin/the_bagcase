@@ -15,6 +15,8 @@ const links = [
   { label: "Contact", href: "/contact" },
 ];
 
+const logoUrl = "https://github.com/user-attachments/assets/3a86695a-5ebf-468c-babf-21f4673973de";
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -37,13 +39,13 @@ export default function Navbar() {
     >
       <nav className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-4 md:px-8">
         <Link href="/" className="flex items-center gap-3">
-          <span className="relative h-9 w-9 overflow-hidden rounded-full border border-gold/50 bg-cream/80">
-            <Image src="/logo.svg" alt="The BagCase" fill className="object-cover" sizes="36px" />
-          </span>
-          <div>
-            <p className="logo-shimmer font-serif text-lg leading-none text-cream">THE BAGCASE</p>
-            <p className="text-[10px] tracking-[0.16em] text-gold">EST. 2023</p>
-          </div>
+          <Image
+            src={logoUrl}
+            alt="The BagCase"
+            width={218}
+            height={118}
+            className="h-12 w-auto rounded-md border border-gold/40 bg-cream/90 p-1"
+          />
         </Link>
 
         <ul className="hidden items-center gap-8 text-sm text-cream lg:flex">
