@@ -1,4 +1,5 @@
 export const productCategories = ["Briefcase", "Duffel Bag", "Accessories", "Wallet"] as const;
+export const defaultColorOptions = ["Navy Blue", "Brown", "Black", "Gold", "Navy/Gold"] as const;
 
 export type ProductCategory = (typeof productCategories)[number];
 

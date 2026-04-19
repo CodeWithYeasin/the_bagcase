@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import { notFound, useParams } from "next/navigation";
 import ProductViewer3D from "@/components/ProductViewer3D";
-import { formatPrice, products } from "@/lib/products";
+import { defaultColorOptions, formatPrice, products } from "@/lib/products";
 import { useCart } from "@/lib/cart-context";
 
 const tabs = ["Details", "Materials", "Shipping"] as const;
@@ -13,7 +13,7 @@ export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
   const product = useMemo(() => products.find((item) => item.id === Number(params.id)), [params.id]);
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("Details");
-  const colorOptions = useMemo(() => Array.from(new Set([product?.color, "Brown", "Black"].filter(Boolean))), [product?.color]);
+  const colorOptions = useMemo(() => Array.from(new Set([product?.color, ...defaultColorOptions].filter(Boolean))), [product?.color]);
   const [selectedColor, setSelectedColor] = useState(product?.color ?? "Navy Blue");
   const [selectedSize, setSelectedSize] = useState("Standard");
   const [quantity, setQuantity] = useState(1);
