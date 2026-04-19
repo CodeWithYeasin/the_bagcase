@@ -33,7 +33,7 @@ export default function CustomCursor() {
         height: active ? 40 : 24,
         transform: `translate(${position.x - (active ? 20 : 12)}px, ${position.y - (active ? 20 : 12)}px)`,
       }}
-      aria-hidden
+      aria-hidden={true}
     />
   );
 }
