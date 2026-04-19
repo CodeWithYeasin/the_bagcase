@@ -3,13 +3,11 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 type Mode = "login" | "register" | "admin";
 
 export default function AuthPage() {
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("login");
   const [showPassword, setShowPassword] = useState(false);
@@ -17,9 +15,10 @@ export default function AuthPage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const requestedMode = searchParams.get("mode");
+    const params = new URLSearchParams(window.location.search);
+    const requestedMode = params.get("mode");
     if (requestedMode === "admin") setMode("admin");
-  }, [searchParams]);
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

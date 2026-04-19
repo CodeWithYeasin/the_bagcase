@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { formatPrice } from "@/lib/products";
 
 type OrderItem = {
@@ -20,9 +19,13 @@ type Order = {
 };
 
 export default function OrderConfirmationPage() {
-  const searchParams = useSearchParams();
-  const orderId = searchParams.get("orderId");
+  const [orderId, setOrderId] = useState<string | null>(null);
   const [order, setOrder] = useState<Order | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setOrderId(params.get("orderId"));
+  }, []);
 
   useEffect(() => {
     if (!orderId) return;

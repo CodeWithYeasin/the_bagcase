@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
 type ChatMessage = {
@@ -21,16 +21,16 @@ export default function AdminChatPage() {
   const [input, setInput] = useState("");
   const socketRef = useRef<Socket | null>(null);
 
-  const loadThreads = async () => {
+  const loadThreads = useCallback(async () => {
     const res = await fetch("/api/chats");
     const data = await res.json();
     setThreads(data.items ?? []);
-    if (!active && data.items?.length) setActive(data.items[0]);
-  };
+    setActive((prev) => prev ?? data.items?.[0] ?? null);
+  }, []);
 
   useEffect(() => {
     loadThreads();
-  }, []);
+  }, [loadThreads]);
 
   useEffect(() => {
     if (!active?._id) return;

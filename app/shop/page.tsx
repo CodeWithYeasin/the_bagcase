@@ -29,14 +29,14 @@ export default function ShopPage() {
       const matchesPrice = p.price <= priceRange;
       const matchesQuery = p.name.toLowerCase().includes(query.toLowerCase().trim());
       const matchesStock = !onlyInStock || p.stock > 0;
-      const matchesNew = !onlyNew || p.isNew;
+      const matchesNew = !onlyNew || p.isNewArrival;
       return matchesCategory && matchesPrice && matchesQuery && matchesStock && matchesNew;
     });
 
     return result.sort((a, b) => {
       if (sort === "price-asc") return a.price - b.price;
       if (sort === "price-desc") return b.price - a.price;
-      if (sort === "newest") return Number(b.isNew) - Number(a.isNew);
+      if (sort === "newest") return Number(b.isNewArrival) - Number(a.isNewArrival);
       return b.rating - a.rating;
     });
   }, [selectedCategory, priceRange, query, onlyInStock, onlyNew, sort]);

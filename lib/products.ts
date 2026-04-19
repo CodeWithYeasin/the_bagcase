@@ -17,7 +17,7 @@ export type Product = {
   description: string;
   discountPercent: number;
   stock: number;
-  isNew: boolean;
+  isNewArrival: boolean;
   rating: number;
   tags: string[];
   badge?: "New Arrival" | "Best Seller";
@@ -39,7 +39,7 @@ export const products: Product[] = [
       "Crafted for modern executives with organized compartments and refined detailing.",
     discountPercent: 12,
     stock: 18,
-    isNew: false,
+    isNewArrival: false,
     rating: 4.8,
     tags: ["executive", "leather", "travel"],
     badge: "Best Seller",
@@ -59,7 +59,7 @@ export const products: Product[] = [
       "A premium weekender duffel balancing sophistication, comfort, and travel-ready utility.",
     discountPercent: 8,
     stock: 24,
-    isNew: true,
+    isNewArrival: true,
     rating: 4.6,
     tags: ["weekender", "leather", "travel"],
     badge: "New Arrival",
@@ -79,7 +79,7 @@ export const products: Product[] = [
       "Lightweight silk scarf designed to elevate every travel and evening ensemble.",
     discountPercent: 0,
     stock: 40,
-    isNew: true,
+    isNewArrival: true,
     rating: 4.5,
     tags: ["silk", "accessory"],
   },
@@ -98,7 +98,7 @@ export const products: Product[] = [
       "Compact daily wallet with signature monogram detailing and practical storage.",
     discountPercent: 15,
     stock: 12,
-    isNew: false,
+    isNewArrival: false,
     rating: 4.7,
     tags: ["wallet", "monogram"],
     badge: "Best Seller",
@@ -118,7 +118,7 @@ export const products: Product[] = [
       "A collectible brass keychain inspired by timeless exploration heritage.",
     discountPercent: 5,
     stock: 60,
-    isNew: false,
+    isNewArrival: false,
     rating: 4.4,
     tags: ["keychain", "gift"],
   },
@@ -137,7 +137,7 @@ export const products: Product[] = [
       "Elegant travel journal planner with durable leather cover and premium paper stock.",
     discountPercent: 10,
     stock: 30,
-    isNew: true,
+    isNewArrival: true,
     rating: 4.6,
     tags: ["journal", "planner"],
     badge: "New Arrival",

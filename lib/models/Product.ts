@@ -15,7 +15,7 @@ const ProductSchema = new Schema(
     badge: { type: String },
     discountPercent: { type: Number, default: 0 },
     stock: { type: Number, default: 0 },
-    isNew: { type: Boolean, default: false },
+    isNewArrival: { type: Boolean, default: false },
     rating: { type: Number, default: 4.5 },
     tags: { type: [String], default: [] },
   },

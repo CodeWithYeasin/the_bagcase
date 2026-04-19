@@ -40,7 +40,8 @@ export default function Navbar() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setOnLightSection(entry.target.dataset.theme === "light");
+            const target = entry.target as HTMLElement;
+            setOnLightSection(target.dataset.theme === "light");
           }
         });
       },

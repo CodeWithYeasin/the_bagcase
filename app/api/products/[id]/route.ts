@@ -2,29 +2,30 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import { ProductModel } from "@/lib/models/Product";
 
-type Params = { params: { id: string } };
-
-export async function GET(_: Request, { params }: Params) {
+export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   await connectToDatabase();
-  const product = await ProductModel.findById(params.id).lean();
+  const product = await ProductModel.findById(id).lean();
   if (!product) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
   return NextResponse.json({ item: product });
 }
 
-export async function PUT(request: Request, { params }: Params) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   await connectToDatabase();
   const body = await request.json();
-  const product = await ProductModel.findByIdAndUpdate(params.id, body, { new: true });
+  const product = await ProductModel.findByIdAndUpdate(id, body, { new: true });
   if (!product) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
   return NextResponse.json({ item: product });
 }
 
-export async function DELETE(_: Request, { params }: Params) {
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   await connectToDatabase();
-  await ProductModel.findByIdAndDelete(params.id);
+  await ProductModel.findByIdAndDelete(id);
   return NextResponse.json({ ok: true });
 }

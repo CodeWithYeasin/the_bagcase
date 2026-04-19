@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import type { Server as NetServer } from "http";
 import { Server } from "socket.io";
 import { connectToDatabase } from "@/lib/db";
 import { ChatModel } from "@/lib/models/Chat";
@@ -13,7 +14,8 @@ type NextApiResponseWithSocket = NextApiResponse & {
 
 export default function handler(req: NextApiRequest, res: NextApiResponseWithSocket) {
   if (!res.socket.server.io) {
-    const io = new Server(res.socket.server, {
+    const httpServer = res.socket.server as unknown as NetServer;
+    const io = new Server(httpServer, {
       path: "/api/socket",
       addTrailingSlash: false,
     });

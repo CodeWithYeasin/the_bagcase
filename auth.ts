@@ -1,12 +1,13 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
+import type { Provider } from "next-auth/providers";
 import { compare, hash } from "bcryptjs";
 import { createUser, getUserByEmail } from "@/lib/users";
 
 const adminEmails = process.env.ADMIN_EMAILS?.split(",").map((email) => email.trim().toLowerCase()) ?? [];
 
-const providers = [
+const providers: Provider[] = [
   Credentials({
     name: "Credentials",
     credentials: {

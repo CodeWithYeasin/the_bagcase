@@ -69,7 +69,7 @@ export default function ProductCard({ product }: { product: Product }) {
     <motion.div whileHover={{ y: -6 }} className="group [perspective:1000px]">
       <div className="relative h-[440px] w-full rounded-2xl border border-gold/20 [transform-style:preserve-3d] transition-transform duration-700 group-hover:[transform:rotateY(180deg)] after:absolute after:inset-[1px] after:rounded-2xl after:border after:border-gold/50 after:opacity-0 after:transition after:duration-700 group-hover:after:opacity-100 group-hover:after:animate-border-trace">
         <div className="absolute inset-0 rounded-2xl bg-white p-4 [backface-visibility:hidden]">
-          {(product.badge || product.isNew) && (
+          {(product.badge || product.isNewArrival) && (
             <span className="absolute left-4 top-4 z-10 rounded-r-full bg-gold px-3 py-1 text-xs font-medium text-navy animate-pulse-slow">
               {product.badge ?? "New Arrival"}
             </span>

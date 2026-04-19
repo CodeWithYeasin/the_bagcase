@@ -11,7 +11,11 @@ const tabs = ["Details", "Materials", "Shipping"] as const;
 
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
-  const product = useMemo(() => products.find((item) => item.id === Number(params.id)), [params.id]);
+  const productId = params?.id ? Number(params.id) : null;
+  const product = useMemo(
+    () => products.find((item) => item.id === productId),
+    [productId]
+  );
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("Details");
   const colorOptions = useMemo(() => Array.from(new Set([product?.color, ...defaultColorOptions].filter(Boolean))), [product?.color]);
   const [selectedColor, setSelectedColor] = useState(product?.color ?? "Navy Blue");
@@ -19,11 +23,11 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
 
-  if (!product) return notFound();
-
   useEffect(() => {
-    setSelectedColor(product.color);
+    if (product) setSelectedColor(product.color);
   }, [product]);
+
+  if (!product) return notFound();
 
   return (
     <section

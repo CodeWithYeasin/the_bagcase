@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import ProductEditor from "@/components/admin/ProductEditor";
 import { productCategories } from "@/lib/products";
@@ -18,7 +19,7 @@ type AdminProduct = {
   description: string;
   discountPercent: number;
   stock: number;
-  isNew: boolean;
+  isNewArrival: boolean;
   rating: number;
   tags: string[];
 };
@@ -36,7 +37,7 @@ const emptyProduct: AdminProduct = {
   description: "",
   discountPercent: 0,
   stock: 0,
-  isNew: false,
+  isNewArrival: false,
   rating: 4.5,
   tags: [],
 };
@@ -200,7 +201,7 @@ export default function AdminProductsPage() {
                   <span className="text-navy/70">{product.category}</span>
                   <span className="text-navy/70">{product.stock}</span>
                   <span className="text-xs uppercase tracking-[0.2em] text-gold">
-                    {product.isNew ? "New" : product.stock > 0 ? "Active" : "Low"}
+                    {product.isNewArrival ? "New" : product.stock > 0 ? "Active" : "Low"}
                   </span>
                 </button>
               ))}
@@ -283,8 +284,8 @@ export default function AdminProductsPage() {
             <label className="flex items-center gap-2 text-sm text-navy/70">
               <input
                 type="checkbox"
-                checked={formState.isNew}
-                onChange={(e) => setFormState((prev) => ({ ...prev, isNew: e.target.checked }))}
+              checked={formState.isNewArrival}
+              onChange={(e) => setFormState((prev) => ({ ...prev, isNewArrival: e.target.checked }))}
               />
               New Arrival
             </label>
@@ -309,7 +310,14 @@ export default function AdminProductsPage() {
             <p className="text-xs uppercase tracking-[0.2em] text-navy/60">Gallery</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {formState.images.map((image) => (
-                <img key={image} src={image} alt="Uploaded" className="h-16 w-16 rounded-lg object-cover" />
+                <Image
+                  key={image}
+                  src={image}
+                  alt="Uploaded product"
+                  width={64}
+                  height={64}
+                  className="h-16 w-16 rounded-lg object-cover"
+                />
               ))}
               <input
                 type="file"
