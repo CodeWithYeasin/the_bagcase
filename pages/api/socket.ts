@@ -13,6 +13,10 @@ type NextApiResponseWithSocket = NextApiResponse & {
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponseWithSocket) {
+  if (req.method !== "GET") {
+    res.status(405).end();
+    return;
+  }
   if (!res.socket.server.io) {
     const httpServer = res.socket.server as unknown as NetServer;
     const io = new Server(httpServer, {

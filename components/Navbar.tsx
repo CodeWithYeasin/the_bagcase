@@ -38,12 +38,13 @@ export default function Navbar() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const target = entry.target as HTMLElement;
-            setOnLightSection(target.dataset.theme === "light");
-          }
-        });
+        const visible = entries.filter((entry) => entry.isIntersecting);
+        if (!visible.length) return;
+        const best = visible.reduce((prev, current) =>
+          current.intersectionRatio > prev.intersectionRatio ? current : prev
+        );
+        const target = best.target as HTMLElement;
+        setOnLightSection(target.dataset.theme === "light");
       },
       { rootMargin: "-40% 0px -40% 0px", threshold: 0.1 }
     );

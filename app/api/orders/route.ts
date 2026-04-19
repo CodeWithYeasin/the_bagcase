@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { connectToDatabase } from "@/lib/db";
 import { OrderModel } from "@/lib/models/Order";
 import { ProductModel } from "@/lib/models/Product";
+import { Types } from "mongoose";
 import { getDiscountedPrice, products } from "@/lib/products";
 
 type NormalizedItem = {
@@ -45,7 +46,7 @@ export async function POST(request: Request) {
     : [];
   const objectIds = requestedItems
     .map((item) => item.productId)
-    .filter((id) => typeof id === "string" && id.length === 24);
+    .filter((id) => typeof id === "string" && Types.ObjectId.isValid(id));
 
   const dbProducts = objectIds.length
     ? await ProductModel.find({ _id: { $in: objectIds } }).lean()

@@ -12,10 +12,12 @@ export default function ProductEditor({
   onChange: (value: string) => void;
 }) {
   const lastValueRef = useRef(value);
+  const isApplyingRef = useRef(false);
   const editor = useEditor({
     extensions: [StarterKit],
     content: value,
     onUpdate: ({ editor }) => {
+      if (isApplyingRef.current) return;
       const html = editor.getHTML();
       lastValueRef.current = html;
       onChange(html);
@@ -24,8 +26,10 @@ export default function ProductEditor({
 
   useEffect(() => {
     if (editor && value !== lastValueRef.current) {
+      isApplyingRef.current = true;
       editor.commands.setContent(value, { emitUpdate: false });
       lastValueRef.current = value;
+      isApplyingRef.current = false;
     }
   }, [editor, value]);
 

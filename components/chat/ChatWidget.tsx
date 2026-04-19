@@ -5,6 +5,7 @@ import { io, Socket } from "socket.io-client";
 import { FiMessageSquare, FiSend } from "react-icons/fi";
 
 type ChatMessage = {
+  id: string;
   sender: "user" | "admin";
   text: string;
   createdAt?: string;
@@ -51,7 +52,14 @@ export default function ChatWidget() {
       });
       if (!res.ok) return;
       const data = await res.json();
-      if (data.item?.messages) setMessages(data.item.messages);
+      if (data.item?.messages) {
+        setMessages(
+          data.item.messages.map((message: Omit<ChatMessage, "id">) => ({
+            ...message,
+            id: message.createdAt ?? crypto.randomUUID(),
+          }))
+        );
+      }
     };
     loadHistory();
 
@@ -61,8 +69,11 @@ export default function ChatWidget() {
     }
     const socket = socketRef.current;
     socket.emit("chat:join", chatId);
-    socket.on("chat:message", (message: ChatMessage) => {
-      setMessages((prev) => [...prev, message]);
+    socket.on("chat:message", (message: Omit<ChatMessage, "id">) => {
+      setMessages((prev) => [
+        ...prev,
+        { ...message, id: message.createdAt ?? crypto.randomUUID() },
+      ]);
     });
     socket.on("chat:error", (payload: { message: string }) => {
       setError(payload.message);
@@ -94,9 +105,9 @@ export default function ChatWidget() {
             {messages.length === 0 ? (
               <p className="text-navy/60">Start a conversation with our team.</p>
             ) : (
-              messages.map((message, index) => (
+              messages.map((message) => (
                 <div
-                  key={message.createdAt ?? `${chatId ?? "chat"}-${index}`}
+                  key={message.id}
                   className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <span

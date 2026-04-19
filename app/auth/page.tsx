@@ -43,8 +43,18 @@ export default function AuthPage() {
         return;
       }
       const complexity = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
-      if (password.length < 8 || password !== confirm || !complexity.test(password)) {
-        setMessage("Passwords must match, be 8+ characters, and include upper/lowercase plus a number.");
+      if (password !== confirm) {
+        setMessage("Passwords do not match.");
+        setLoading(false);
+        return;
+      }
+      if (password.length < 8) {
+        setMessage("Password must be at least 8 characters.");
+        setLoading(false);
+        return;
+      }
+      if (!complexity.test(password)) {
+        setMessage("Password must include uppercase, lowercase, and a number.");
         setLoading(false);
         return;
       }

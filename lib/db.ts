@@ -25,6 +25,9 @@ export async function connectToDatabase() {
   if (!globalForMongoose.mongoose.promise) {
     globalForMongoose.mongoose.promise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
     });
   }
 

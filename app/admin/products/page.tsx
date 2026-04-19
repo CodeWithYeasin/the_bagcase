@@ -84,22 +84,39 @@ export default function AdminProductsPage() {
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     const preset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
-    if (!cloudName || !preset) {
-      setMessage(
-        "Cloudinary is not configured. Set NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME and NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET."
-      );
-      return;
+    const signRes = await fetch("/api/cloudinary/sign", { method: "POST" });
+    let data;
+
+    if (signRes.ok) {
+      const signed = await signRes.json();
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("api_key", signed.apiKey);
+      formData.append("timestamp", signed.timestamp);
+      formData.append("signature", signed.signature);
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${signed.cloudName}/image/upload`, {
+        method: "POST",
+        body: formData,
+      });
+      data = await res.json();
+    } else {
+      if (!cloudName || !preset) {
+        setMessage(
+          "Cloudinary is not configured. Set NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME and NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET."
+        );
+        return;
+      }
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", preset);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: formData,
+      });
+      data = await res.json();
     }
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", preset);
-
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-      method: "POST",
-      body: formData,
-    });
-    const data = await res.json();
     if (data.secure_url) {
       setFormState((prev) => ({
         ...prev,
