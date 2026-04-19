@@ -7,6 +7,11 @@ const nextConfig = {
         hostname: "github.com",
         pathname: "/user-attachments/assets/**",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
     ],
   },
 };
