@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <Hero3D />
-      <section className="mx-auto w-full max-w-7xl px-4 py-16 md:px-8">
+      <section className="mx-auto w-full max-w-7xl px-4 py-16 md:px-8" data-theme="light">
         <ScrollReveal>
           <div className="mb-8 flex items-end justify-between gap-4">
             <div>

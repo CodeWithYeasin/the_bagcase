@@ -1,38 +1,35 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function ScrollReveal({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.unobserve(entry.target);
+    if (!ref.current) return;
+    gsap.registerPlugin(ScrollTrigger);
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ref.current,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ref.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
         }
-      },
-      { threshold: 0.2 }
-    );
+      );
+    }, ref);
 
-    observer.observe(el);
-    return () => observer.disconnect();
+    return () => ctx.revert();
   }, []);
 
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={visible ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, ease: "easeOut" }}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div ref={ref}>{children}</div>;
 }

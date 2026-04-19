@@ -1,17 +1,21 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { notFound, useParams } from "next/navigation";
 import ProductViewer3D from "@/components/ProductViewer3D";
-import { defaultColorOptions, formatPrice, products } from "@/lib/products";
+import { defaultColorOptions, formatPrice, getDiscountedPrice, products } from "@/lib/products";
 import { useCart } from "@/lib/cart-context";
 
 const tabs = ["Details", "Materials", "Shipping"] as const;
 
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
-  const product = useMemo(() => products.find((item) => item.id === Number(params.id)), [params.id]);
+  const productId = params?.id ? Number(params.id) : null;
+  const product = useMemo(
+    () => products.find((item) => item.id === productId),
+    [productId]
+  );
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("Details");
   const colorOptions = useMemo(() => Array.from(new Set([product?.color, ...defaultColorOptions].filter(Boolean))), [product?.color]);
   const [selectedColor, setSelectedColor] = useState(product?.color ?? "Navy Blue");
@@ -19,16 +23,23 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
 
+  useEffect(() => {
+    if (product) setSelectedColor(product.color);
+  }, [product]);
+
   if (!product) return notFound();
 
   return (
-    <section className="mx-auto mt-24 grid w-full max-w-7xl gap-8 px-4 py-10 md:px-8 lg:grid-cols-2">
+    <section
+      className="mx-auto mt-24 grid w-full max-w-7xl gap-8 px-4 py-10 md:px-8 lg:grid-cols-2"
+      data-theme="light"
+    >
       <div className="space-y-5">
         <ProductViewer3D />
         <div className="grid grid-cols-3 gap-3">
-          {[1, 2, 3].map((slot) => (
-            <button key={slot} className="relative h-28 overflow-hidden rounded-xl border border-gold/20">
-              <Image src={product.image} alt={product.name} fill className="object-cover" />
+          {product.images.map((image, index) => (
+            <button key={`${image}-${index}`} className="relative h-28 overflow-hidden rounded-xl border border-gold/20">
+              <Image src={image} alt={product.name} fill className="object-cover" />
             </button>
           ))}
         </div>
@@ -37,7 +48,20 @@ export default function ProductDetailPage() {
       <div>
         <p className="text-sm tracking-[0.2em] text-gold">THE BAGCASE</p>
         <h1 className="mt-3 font-serif text-4xl text-navy">{product.name}</h1>
-        <p className="mt-3 text-2xl font-semibold text-gold">{formatPrice(product.price)}</p>
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <p className="text-2xl font-semibold text-gold">
+            {formatPrice(getDiscountedPrice(product.price, product.discountPercent))}
+          </p>
+          {product.discountPercent > 0 && (
+            <span className="text-sm text-navy/60 line-through">{formatPrice(product.price)}</span>
+          )}
+          {product.discountPercent > 0 && (
+            <span className="rounded-full bg-gold/20 px-3 py-1 text-xs font-semibold text-navy">
+              Save {product.discountPercent}%
+            </span>
+          )}
+        </div>
+        <p className="mt-2 text-sm text-navy/70">Stock: {product.stock > 0 ? `${product.stock} available` : "Out of stock"}</p>
 
         <div className="mt-6 space-y-5">
           <div>
@@ -78,10 +102,11 @@ export default function ProductDetailPage() {
 
         <div className="mt-7 flex flex-wrap gap-3">
           <button
-            className="rounded-full border border-gold bg-navy px-7 py-3 font-medium text-cream transition hover:bg-gold hover:text-navy"
+            className="rounded-full border border-gold bg-navy px-7 py-3 font-medium text-cream transition hover:bg-gold hover:text-navy disabled:cursor-not-allowed disabled:opacity-60"
             onClick={() => addToCart(product, quantity)}
+            disabled={product.stock <= 0}
           >
-            Add to Cart
+            {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
           </button>
           <button className="rounded-full border border-navy px-7 py-3 font-medium text-navy">Wishlist</button>
         </div>

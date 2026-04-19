@@ -8,7 +8,7 @@ const milestones = [
 
 export default function AboutPage() {
   return (
-    <section className="mx-auto mt-20 w-full max-w-7xl px-4 py-12 md:px-8">
+    <section className="mx-auto mt-20 w-full max-w-7xl px-4 py-12 md:px-8" data-theme="light">
       <ScrollReveal>
         <h1 className="font-serif text-5xl">Our Story</h1>
         <p className="mt-4 max-w-3xl text-navy/80">

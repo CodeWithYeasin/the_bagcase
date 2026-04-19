@@ -2,8 +2,9 @@
 
 import { createContext, useContext, useMemo, useState } from "react";
 import type { Product } from "@/lib/products";
+import { getDiscountedPrice } from "@/lib/products";
 
-export type CartItem = Product & { quantity: number };
+export type CartItem = Product & { quantity: number; unitPrice: number };
 
 type CartContextType = {
   items: CartItem[];
@@ -15,6 +16,7 @@ type CartContextType = {
   addToCart: (product: Product, quantity?: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
   removeItem: (productId: number) => void;
+  clearCart: () => void;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -24,6 +26,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const addToCart = (product: Product, quantity = 1) => {
+    const unitPrice = getDiscountedPrice(product.price, product.discountPercent);
     setItems((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
@@ -33,7 +36,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             : item
         );
       }
-      return [...prev, { ...product, quantity }];
+      return [...prev, { ...product, quantity, unitPrice }];
     });
     setIsOpen(true);
   };
@@ -52,12 +55,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems((prev) => prev.filter((item) => item.id !== productId));
   };
 
+  const clearCart = () => {
+    setItems([]);
+  };
+
   const totalItems = useMemo(
     () => items.reduce((acc, item) => acc + item.quantity, 0),
     [items]
   );
   const subtotal = useMemo(
-    () => items.reduce((acc, item) => acc + item.price * item.quantity, 0),
+    () => items.reduce((acc, item) => acc + Math.round(item.unitPrice * item.quantity), 0),
     [items]
   );
 
@@ -73,6 +80,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         addToCart,
         updateQuantity,
         removeItem,
+        clearCart,
       }}
     >
       {children}

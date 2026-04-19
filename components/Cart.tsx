@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { FiMinus, FiPlus, FiX } from "react-icons/fi";
 import { formatPrice } from "@/lib/products";
 import { useCart } from "@/lib/cart-context";
@@ -48,7 +49,12 @@ export default function Cart() {
                       </div>
                       <div className="flex-1">
                         <h3 className="font-medium text-navy">{item.name}</h3>
-                        <p className="text-sm text-navy/70">{formatPrice(item.price)}</p>
+                        <div className="flex items-center gap-2 text-sm text-navy/70">
+                          <span>{formatPrice(item.unitPrice)}</span>
+                          {item.discountPercent > 0 && (
+                            <span className="text-xs line-through">{formatPrice(item.price)}</span>
+                          )}
+                        </div>
                         <div className="mt-2 flex items-center justify-between">
                           <div className="flex items-center gap-2 rounded-full border border-gold/30 px-2 py-1">
                             <button onClick={() => updateQuantity(item.id, item.quantity - 1)} aria-label="Decrease quantity">
@@ -75,9 +81,22 @@ export default function Cart() {
                 <span>Subtotal</span>
                 <strong>{formatPrice(subtotal)}</strong>
               </div>
-              <button className="w-full rounded-full border border-gold bg-navy py-3 font-medium text-cream transition hover:bg-gold hover:text-navy">
-                Checkout
-              </button>
+              {items.length === 0 ? (
+                <button
+                  className="w-full rounded-full border border-gold/50 bg-navy/40 py-3 font-medium text-cream/60"
+                  disabled
+                >
+                  Checkout
+                </button>
+              ) : (
+                <Link
+                  href="/checkout"
+                  onClick={closeCart}
+                  className="block w-full rounded-full border border-gold bg-navy py-3 text-center font-medium text-cream transition hover:bg-gold hover:text-navy"
+                >
+                  Checkout
+                </Link>
+              )}
             </div>
           </motion.aside>
         </>

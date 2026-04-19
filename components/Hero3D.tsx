@@ -4,8 +4,9 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, OrbitControls, Stars } from "@react-three/drei";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
+import gsap from "gsap";
 
 function SuitcaseModel() {
   const group = useRef<THREE.Group>(null);
@@ -41,9 +42,44 @@ function SuitcaseModel() {
 export default function Hero3D() {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], [0, -180]);
+  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const sublineRef = useRef<HTMLParagraphElement>(null);
+  const headline = "Exquisite Travel & Lifestyle";
+  const headlineLetters = useMemo(() => headline.split(""), [headline]);
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 18 }).map((_, index) => ({
+        id: index,
+        top: `${Math.random() * 80 + 10}%`,
+        left: `${Math.random() * 90 + 5}%`,
+        delay: Math.random() * 2,
+        size: Math.random() * 6 + 4,
+      })),
+    []
+  );
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".hero-letter",
+        { opacity: 0, y: 60 },
+        { opacity: 1, y: 0, stagger: 0.03, duration: 0.8, ease: "power3.out" }
+      );
+      gsap.fromTo(
+        sublineRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.9, delay: 0.4, ease: "power3.out" }
+      );
+    }, headlineRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-gradient-to-b from-navy via-[#223763] to-cream pt-24">
+    <section
+      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-navy via-[#223763] to-cream pt-24"
+      data-theme="dark"
+    >
       <motion.div className="absolute inset-0" style={{ y }}>
         <Canvas camera={{ position: [0, 0, 5], fov: 45 }} shadows>
           <ambientLight intensity={0.5} />
@@ -57,6 +93,23 @@ export default function Hero3D() {
         </Canvas>
       </motion.div>
 
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(201,168,76,0.2),transparent_60%)]" />
+        {particles.map((particle) => (
+          <span
+            key={particle.id}
+            className="absolute rounded-full bg-gold/70 blur-[1px] animate-float-slow"
+            style={{
+              top: particle.top,
+              left: particle.left,
+              width: particle.size,
+              height: particle.size,
+              animationDelay: `${particle.delay}s`,
+            }}
+          />
+        ))}
+      </div>
+
       <div className="relative z-10 mx-auto flex min-h-[80vh] max-w-7xl items-center px-4 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 35 }}
@@ -65,8 +118,14 @@ export default function Hero3D() {
           className="max-w-xl"
         >
           <p className="text-sm tracking-[0.28em] text-gold">EST. 2023</p>
-          <h1 className="mt-4 font-serif text-5xl leading-tight text-cream md:text-7xl">Exquisite Travel & Lifestyle</h1>
-          <p className="mt-6 text-cream/90">
+          <h1 ref={headlineRef} className="mt-4 font-serif text-5xl leading-tight text-cream md:text-7xl">
+            {headlineLetters.map((letter, index) => (
+              <span key={`${letter}-${index}`} className="hero-letter inline-block">
+                {letter === " " ? "\u00A0" : letter}
+              </span>
+            ))}
+          </h1>
+          <p ref={sublineRef} className="mt-6 text-cream/90">
             Discover luxury essentials designed for modern journeys with timeless craftsmanship.
           </p>
           <Link
@@ -77,6 +136,15 @@ export default function Hero3D() {
           </Link>
         </motion.div>
       </div>
+
+      <motion.div
+        className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-xs tracking-[0.3em] text-cream/70"
+        animate={{ y: [0, 8, 0] }}
+        transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <span>SCROLL</span>
+        <span className="h-10 w-[2px] bg-cream/40" />
+      </motion.div>
     </section>
   );
 }

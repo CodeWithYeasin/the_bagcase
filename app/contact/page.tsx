@@ -7,7 +7,7 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
 
   return (
-    <section className="mx-auto mt-20 w-full max-w-7xl px-4 py-12 md:px-8">
+    <section className="mx-auto mt-20 w-full max-w-7xl px-4 py-12 md:px-8" data-theme="light">
       <ScrollReveal>
         <h1 className="font-serif text-5xl">Contact Us</h1>
       </ScrollReveal>
