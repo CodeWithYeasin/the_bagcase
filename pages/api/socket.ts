@@ -27,13 +27,20 @@ export default function handler(req: NextApiRequest, res: NextApiResponseWithSoc
 
       socket.on("chat:message", async (payload: { chatId: string; sender: string; text: string }) => {
         const { chatId, sender, text } = payload;
-        if (!chatId || !text) return;
+        const sanitizedText = text?.trim();
+        if (!chatId || !sanitizedText) return;
+        if (sender !== "user" && sender !== "admin") return;
         await connectToDatabase();
         await ChatModel.findByIdAndUpdate(chatId, {
-          $push: { messages: { sender, text } },
+          $push: { messages: { sender, text: sanitizedText } },
           $set: { status: "open" },
         });
-        io.to(chatId).emit("chat:message", { sender, text, chatId, createdAt: new Date().toISOString() });
+        io.to(chatId).emit("chat:message", {
+          sender,
+          text: sanitizedText,
+          chatId,
+          createdAt: new Date().toISOString(),
+        });
       });
     });
 

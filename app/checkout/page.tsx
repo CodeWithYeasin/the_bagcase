@@ -39,9 +39,6 @@ export default function CheckoutPage() {
         quantity: item.quantity,
         image: item.image,
       })),
-      subtotal,
-      shipping,
-      total,
     };
 
     const res = await fetch("/api/orders", {

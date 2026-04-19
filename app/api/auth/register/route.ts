@@ -11,7 +11,10 @@ export async function POST(request: Request) {
   const password = body?.password?.toString() ?? "";
 
   if (!name || !email || password.length < 6) {
-    return NextResponse.json({ error: "Invalid data" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Name and email are required, and password must be at least 6 characters." },
+      { status: 400 }
+    );
   }
 
   const existing = await getUserByEmail(email);

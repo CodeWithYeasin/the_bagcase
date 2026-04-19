@@ -2,6 +2,16 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { connectToDatabase } from "@/lib/db";
 import { OrderModel } from "@/lib/models/Order";
+import { ProductModel } from "@/lib/models/Product";
+import { getDiscountedPrice, products } from "@/lib/products";
+
+type NormalizedItem = {
+  productId: string | number;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+};
 
 export async function GET() {
   const session = await auth();
@@ -22,12 +32,60 @@ export async function POST(request: Request) {
   const body = await request.json();
   await connectToDatabase();
 
+  const requestedItems: Array<{ productId: string | number; quantity?: number }> = Array.isArray(
+    body.items
+  )
+    ? body.items
+    : [];
+  const objectIds = requestedItems
+    .map((item) => item.productId)
+    .filter((id) => typeof id === "string" && id.length === 24);
+
+  const dbProducts = objectIds.length
+    ? await ProductModel.find({ _id: { $in: objectIds } }).lean()
+    : [];
+  const dbMap = new Map(dbProducts.map((product) => [product._id.toString(), product]));
+
+  const normalizedItems = requestedItems
+    .map((item) => {
+      const quantity = Math.max(1, Number(item.quantity) || 1);
+      const productId = item.productId;
+      const dbProduct =
+        typeof productId === "string" ? dbMap.get(productId) : undefined;
+      const localProduct =
+        typeof productId === "number" || typeof productId === "string"
+          ? products.find((product) => product.id === Number(productId))
+          : undefined;
+      const product = dbProduct ?? localProduct;
+      if (!product) return null;
+      const price = getDiscountedPrice(product.price, product.discountPercent ?? 0);
+      return {
+        productId,
+        name: product.name,
+        price,
+        quantity,
+        image: product.image,
+      } as NormalizedItem;
+    })
+    .filter((item): item is NormalizedItem => Boolean(item));
+
+  if (!normalizedItems.length) {
+    return NextResponse.json({ error: "No valid items provided." }, { status: 400 });
+  }
+
+  const subtotal = normalizedItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+  const shipping = subtotal > 0 ? 200 : 0;
+  const total = subtotal + shipping;
+
   const order = await OrderModel.create({
     userId: session.user.id,
-    items: body.items ?? [],
-    subtotal: body.subtotal ?? 0,
-    shipping: body.shipping ?? 0,
-    total: body.total ?? 0,
+    items: normalizedItems,
+    subtotal,
+    shipping,
+    total,
     shippingAddress: body.shippingAddress,
   });
 

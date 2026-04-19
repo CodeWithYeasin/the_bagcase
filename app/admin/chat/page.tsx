@@ -61,7 +61,8 @@ export default function AdminChatPage() {
         <h2 className="font-serif text-2xl text-navy">Conversations</h2>
         <div className="mt-4 space-y-2">
           {threads.map((thread) => {
-            const isUnread = thread.messages?.length && thread.messages[thread.messages.length - 1]?.sender === "user";
+            const lastMessage = thread.messages?.[thread.messages.length - 1];
+            const isUnread = lastMessage?.sender === "user";
             return (
             <button
               key={thread._id}

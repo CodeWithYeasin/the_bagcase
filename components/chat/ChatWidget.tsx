@@ -21,7 +21,7 @@ export default function ChatWidget() {
     if (!open) return;
 
     const init = async () => {
-      const stored = window.localStorage.getItem("bagcase.chatId");
+      const stored = window.localStorage.getItem("bagcase.chat-id");
       if (stored) {
         setChatId(stored);
         return;
@@ -29,7 +29,7 @@ export default function ChatWidget() {
       const res = await fetch("/api/chats", { method: "POST" });
       const data = await res.json();
       if (data.id) {
-        window.localStorage.setItem("bagcase.chatId", data.id);
+        window.localStorage.setItem("bagcase.chat-id", data.id);
         setChatId(data.id);
       }
     };

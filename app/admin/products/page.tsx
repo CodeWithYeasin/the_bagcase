@@ -85,7 +85,9 @@ export default function AdminProductsPage() {
     const preset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
     if (!cloudName || !preset) {
-      setMessage("Cloudinary is not configured.");
+      setMessage(
+        "Cloudinary is not configured. Set NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME and NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET."
+      );
       return;
     }
 
