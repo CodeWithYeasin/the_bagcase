@@ -9,7 +9,9 @@ import { useCart } from "@/lib/cart-context";
 function runFlyToCartAnimation(element: HTMLElement) {
   const cart = document.querySelector("[data-cart-icon]") as HTMLElement | null;
   if (!cart) {
-    console.warn("Cart icon with data-cart-icon attribute not found in DOM; ensure Navbar is rendered before ProductCard.");
+    if (process.env.NODE_ENV === "development") {
+      console.warn("Cart icon not found. Skipping fly-to-cart animation.");
+    }
     return;
   }
 
