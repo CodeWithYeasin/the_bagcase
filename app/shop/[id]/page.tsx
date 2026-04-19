@@ -13,7 +13,8 @@ export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
   const product = useMemo(() => products.find((item) => item.id === Number(params.id)), [params.id]);
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("Details");
-  const [selectedColor, setSelectedColor] = useState("Navy Blue");
+  const colorOptions = useMemo(() => Array.from(new Set([product?.color, "Brown", "Black"].filter(Boolean))), [product?.color]);
+  const [selectedColor, setSelectedColor] = useState(product?.color ?? "Navy Blue");
   const [selectedSize, setSelectedSize] = useState("Standard");
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
@@ -46,7 +47,7 @@ export default function ProductDetailPage() {
               onChange={(e) => setSelectedColor(e.target.value)}
               className="mt-2 w-full rounded-lg border border-gold/25 px-3 py-2"
             >
-              {[product.color, "Brown", "Black"].map((color) => (
+              {colorOptions.map((color) => (
                 <option key={color}>{color}</option>
               ))}
             </select>

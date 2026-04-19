@@ -5,8 +5,14 @@ import { useEffect, useState } from "react";
 export default function CustomCursor() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [active, setActive] = useState(false);
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    if (prefersReducedMotion || coarsePointer) return;
+
+    setEnabled(true);
     const move = (e: MouseEvent) => setPosition({ x: e.clientX, y: e.clientY });
     const handleHover = (e: Event) => {
       const target = e.target as HTMLElement | null;
@@ -24,6 +30,8 @@ export default function CustomCursor() {
       window.removeEventListener("mouseout", leaveHover);
     };
   }, []);
+
+  if (!enabled) return null;
 
   return (
     <span

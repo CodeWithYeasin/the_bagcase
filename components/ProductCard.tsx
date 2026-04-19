@@ -8,7 +8,11 @@ import { useCart } from "@/lib/cart-context";
 
 function runFlyToCartAnimation(element: HTMLElement) {
   const cart = document.querySelector("[data-cart-icon]") as HTMLElement | null;
-  if (!cart) return;
+  if (!cart) {
+    console.warn("Cart icon not found; skipping fly-to-cart animation.");
+    return;
+  }
+
   const from = element.getBoundingClientRect();
   const to = cart.getBoundingClientRect();
   const clone = element.cloneNode(true) as HTMLElement;

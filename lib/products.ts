@@ -1,8 +1,12 @@
+export const productCategories = ["Briefcase", "Duffel Bag", "Accessories", "Wallet"] as const;
+
+export type ProductCategory = (typeof productCategories)[number];
+
 export type Product = {
   id: number;
   name: string;
   price: number;
-  category: "Briefcase" | "Duffel Bag" | "Accessories" | "Wallet";
+  category: ProductCategory;
   color: string;
   material: string;
   image: string;

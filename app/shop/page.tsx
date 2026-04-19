@@ -2,9 +2,9 @@
 
 import { useMemo, useState } from "react";
 import ProductCard from "@/components/ProductCard";
-import { products } from "@/lib/products";
+import { products, productCategories } from "@/lib/products";
 
-const categories = ["All", "Briefcase", "Duffel Bag", "Accessories", "Wallet"] as const;
+const categories = ["All", ...productCategories] as const;
 
 export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState<(typeof categories)[number]>("All");
