@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiShoppingCart, FiX } from "react-icons/fi";
 import { useCart } from "@/lib/cart-context";
+import { BRAND_LOGO_URL } from "@/lib/brand-assets";
 
 const links = [
   { label: "Home", href: "/" },
@@ -14,8 +15,6 @@ const links = [
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
-
-const logoUrl = "https://github.com/user-attachments/assets/3a86695a-5ebf-468c-babf-21f4673973de";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -40,7 +39,7 @@ export default function Navbar() {
       <nav className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-4 md:px-8">
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src={logoUrl}
+            src={BRAND_LOGO_URL}
             alt="The BagCase"
             width={218}
             height={118}
