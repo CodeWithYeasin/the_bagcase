@@ -1,3 +1,5 @@
+import { BRAND_LOGO_URL } from "@/lib/brand-assets";
+
 export default function Home() {
   return (
     <>
@@ -5,16 +7,8 @@ export default function Home() {
         <nav className="navbar" aria-label="Primary">
           <div className="navbar-inner">
             <div className="logo">
-              <div className="logo-icon" aria-hidden="true">
-                <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
-                  <path
-                    d="M18 24h28l4 28H14l4-28zm6-6h16l3 6H21l3-6zm-2 34h20"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+              <div className="logo-icon">
+                <img src={BRAND_LOGO_URL} alt="The BagCase logo" loading="eager" />
               </div>
               <div className="logo-text">
                 <span className="logo-the">The</span>
@@ -448,14 +442,21 @@ export default function Home() {
         }
 
         .logo-icon {
-          width: 44px;
-          height: 44px;
-          color: var(--gold);
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          overflow: hidden;
+          border: 1px solid rgba(201, 168, 76, 0.45);
+          background: var(--cream);
+          box-shadow: 0 4px 12px rgba(201, 168, 76, 0.18);
+          flex-shrink: 0;
         }
 
-        .logo-icon svg {
+        .logo-icon img {
           width: 100%;
           height: 100%;
+          object-fit: cover;
+          display: block;
         }
 
         .logo-text {
