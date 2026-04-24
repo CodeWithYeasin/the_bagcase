@@ -1161,6 +1161,9 @@ export default function Home() {
             let intervalId;
 
             const setSlide = (index) => {
+              if (index < 0 || index >= slides.length) {
+                return;
+              }
               slides.forEach((slide, idx) => {
                 slide.classList.toggle('active', idx === index);
                 if (dots[idx]) {
