@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { BRAND_LOGO_URL } from "@/lib/brand-assets";
 
 export default function Home() {
@@ -8,7 +9,14 @@ export default function Home() {
           <div className="navbar-inner">
             <div className="logo">
               <div className="logo-icon">
-                <img src={BRAND_LOGO_URL} alt="The BagCase logo" loading="eager" />
+                <Image
+                  src={BRAND_LOGO_URL}
+                  alt="The BagCase logo"
+                  width={48}
+                  height={48}
+                  priority
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                />
               </div>
               <div className="logo-text">
                 <span className="logo-the">The</span>
@@ -452,12 +460,6 @@ export default function Home() {
           flex-shrink: 0;
         }
 
-        .logo-icon img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-        }
 
         .logo-text {
           display: flex;
