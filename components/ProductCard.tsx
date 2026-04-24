@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { formatPrice, getDiscountedPrice, Product } from "@/lib/products";
+import { Product } from "@/lib/products";
 import { useCart } from "@/lib/cart-context";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 function runFlyToCartAnimation(element: HTMLElement) {
   const cart = document.querySelector("[data-cart-icon]") as HTMLElement | null;
@@ -45,10 +45,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
   const [displayDiscount, setDisplayDiscount] = useState(0);
   const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
-  const discountedPrice = useMemo(
-    () => getDiscountedPrice(product.price, product.discountPercent),
-    [product.discountPercent, product.price]
-  );
+  const whatsappLink = "https://wa.me/8801410221201";
 
   useEffect(() => {
     if (!product.discountPercent) return;
@@ -82,10 +79,14 @@ export default function ProductCard({ product }: { product: Product }) {
             <h3 className="font-serif text-xl text-navy">{product.name}</h3>
             <p className="text-sm text-navy/65">{product.category}</p>
             <div className="flex items-center gap-2">
-              <p className="font-medium text-gold">{formatPrice(discountedPrice)}</p>
-              {product.discountPercent > 0 && (
-                <span className="text-xs text-navy/60 line-through">{formatPrice(product.price)}</span>
-              )}
+              <a
+                className="font-medium text-gold hover:underline"
+                href={whatsappLink}
+                target="_blank"
+                rel="noreferrer"
+              >
+                WhatsApp Us
+              </a>
             </div>
           </div>
         </div>

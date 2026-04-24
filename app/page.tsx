@@ -2,6 +2,8 @@ import Image from "next/image";
 import { BRAND_LOGO_URL } from "@/lib/brand-assets";
 
 export default function Home() {
+  const whatsappLink = "https://wa.me/8801410221201";
+
   return (
     <>
       <main className="bagcase" id="home">
@@ -220,7 +222,9 @@ export default function Home() {
                   <img src={`https://picsum.photos/300/300?random=${index + 1}`} alt={product.name} loading="lazy" />
                 </div>
                 <h3>{product.name}</h3>
-                <p className="price">{product.price}</p>
+                <a className="price" href={whatsappLink} target="_blank" rel="noreferrer">
+                  WhatsApp Us
+                </a>
               </div>
             ))}
           </div>
@@ -279,7 +283,9 @@ export default function Home() {
                   <img src={`https://picsum.photos/300/300?random=${index + 21}`} alt={product.name} loading="lazy" />
                 </div>
                 <h3>{product.name}</h3>
-                <p className="price">{product.price}</p>
+                <a className="price" href={whatsappLink} target="_blank" rel="noreferrer">
+                  WhatsApp Us
+                </a>
               </div>
             ))}
           </div>
