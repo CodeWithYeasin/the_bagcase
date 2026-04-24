@@ -1150,6 +1150,8 @@ export default function Home() {
         dangerouslySetInnerHTML={{
           __html: `
           (function () {
+            const SLIDER_INTERVAL_MS = 4000;
+            const SCROLL_THRESHOLD = 40;
             const navbar = document.querySelector('.navbar');
             const toggle = document.querySelector('.menu-toggle');
             const navPanel = document.querySelector('.nav-panel');
@@ -1174,7 +1176,7 @@ export default function Home() {
             };
 
             const startSlider = () => {
-              intervalId = window.setInterval(nextSlide, 4000);
+              intervalId = window.setInterval(nextSlide, SLIDER_INTERVAL_MS);
             };
 
             const resetSlider = () => {
@@ -1213,7 +1215,7 @@ export default function Home() {
 
             window.addEventListener('scroll', () => {
               if (!navbar) return;
-              if (window.scrollY > 40) {
+              if (window.scrollY > SCROLL_THRESHOLD) {
                 navbar.classList.add('is-scrolled');
               } else {
                 navbar.classList.remove('is-scrolled');
