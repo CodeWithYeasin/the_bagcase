@@ -114,7 +114,7 @@ export default function Home() {
                   Premium luggage crafted with refined textures, smart compartments, and timeless silhouettes.
                 </p>
                 <div className="slide-actions">
-                  <a className="btn btn-gold" href="#new-arrivals">
+                  <a className="btn btn-gold" href="#collections">
                     Explore Collections
                   </a>
                   <a className="btn btn-outline" href="https://wa.me/8801410221201" target="_blank" rel="noreferrer">
