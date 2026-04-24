@@ -77,9 +77,9 @@ export default function Navbar() {
             <Image
               src={BRAND_LOGO_URL}
               alt="The BagCase"
-              width={218}
-              height={118}
-              className="relative z-10 h-12 w-auto rounded-md border border-gold/40 bg-cream/90 p-1 shadow-[0_0_18px_rgba(201,168,76,0.2)]"
+              width={48}
+              height={48}
+              className="relative z-10 h-12 w-12 rounded-full border border-gold/40 bg-cream/90 object-cover p-1 shadow-[0_0_18px_rgba(201,168,76,0.2)]"
             />
           </span>
           <span className={`hidden text-xs font-semibold tracking-[0.3em] md:inline ${textTone}`}>
