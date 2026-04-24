@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { notFound, useParams } from "next/navigation";
 import ProductViewer3D from "@/components/ProductViewer3D";
-import { defaultColorOptions, formatPrice, getDiscountedPrice, products } from "@/lib/products";
+import { defaultColorOptions, products } from "@/lib/products";
 import { useCart } from "@/lib/cart-context";
 
 const tabs = ["Details", "Materials", "Shipping"] as const;
@@ -22,6 +22,7 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState("Standard");
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
+  const whatsappLink = "https://wa.me/8801410221201";
 
   useEffect(() => {
     if (product) setSelectedColor(product.color);
@@ -49,17 +50,14 @@ export default function ProductDetailPage() {
         <p className="text-sm tracking-[0.2em] text-gold">THE BAGCASE</p>
         <h1 className="mt-3 font-serif text-4xl text-navy">{product.name}</h1>
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <p className="text-2xl font-semibold text-gold">
-            {formatPrice(getDiscountedPrice(product.price, product.discountPercent))}
-          </p>
-          {product.discountPercent > 0 && (
-            <span className="text-sm text-navy/60 line-through">{formatPrice(product.price)}</span>
-          )}
-          {product.discountPercent > 0 && (
-            <span className="rounded-full bg-gold/20 px-3 py-1 text-xs font-semibold text-navy">
-              Save {product.discountPercent}%
-            </span>
-          )}
+          <a
+            className="text-2xl font-semibold text-gold hover:underline"
+            href={whatsappLink}
+            target="_blank"
+            rel="noreferrer"
+          >
+            WhatsApp for price
+          </a>
         </div>
         <p className="mt-2 text-sm text-navy/70">Stock: {product.stock > 0 ? `${product.stock} available` : "Out of stock"}</p>
 
